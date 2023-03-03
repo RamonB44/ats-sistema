@@ -81,3 +81,8 @@ Route::post('/register-tips',function(Request $req){
 
     // return redirect('/');
 })->name('register.betatips');
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+});
