@@ -7,11 +7,7 @@
             <div class="row">
                     <div class="col-md-4">
                         <small>Codigo</small>
-                        <input type="text" class="form-control" value="SIN ESCOGER" id="code" >
-                    </div>
-                    <div class="col-md-2">
-                        <br>
-                        <a href="javascript:addEmploye()" class="btn btn-primary">Agregar</a>
+                        <input type="text" class="form-control" id="code" placeholder="Codigo o DNI"></input>
                     </div>
             </div>
             <div class="table row">

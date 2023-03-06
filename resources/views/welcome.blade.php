@@ -242,17 +242,17 @@
                                             </div>
 
                                             <div style="overflow:auto;margin-top:15px">
-                                            <div class="d-flex justify-content-around" >
-                                                <button type="button" class="btn btn-primary btn-lg " style="width: 33.333%" id="prevBtn" onclick="nextPrev(-1)">Anterior</button>
-                                                <button type="button" class="btn btn-primary btn-lg " style="width: 33.333%" id="nextBtn" onclick="nextPrev(1)">Siguiente</button>
-                                            </div>
+                                                <div class="d-flex justify-content-around" >
+                                                    <button type="button" class="btn btn-primary btn-lg " style="width: 33.333%" id="prevBtn" onclick="nextPrev(-1)">Anterior</button>
+                                                    <button type="button" class="btn btn-primary btn-lg " style="width: 33.333%" id="nextBtn" onclick="nextPrev(1)">Siguiente</button>
+                                                </div>
                                             </div>
                                             <!-- Circles which indicates the steps of the form: -->
                                             <div style="text-align:center;margin-top:40px;">
-                                            <span class="step"></span>
-                                            <span class="step"></span>
-                                            <span class="step"></span>
-                                            <span class="step"></span>
+                                                <span class="step"></span>
+                                                <span class="step"></span>
+                                                <span class="step"></span>
+                                                <span class="step"></span>
                                             </div>
                             </div>
                         </form>
@@ -310,21 +310,22 @@
             });
         }
 
-        function addEmploye(){
-            var code = $('#code').val();
-            if(!$('#code').length>0){
+        function addEmploye(codigo){
+
+            console.log(codigo.length);
+            if(codigo.length > 8 && codigo.length < 0){
                 alert('Necesitas un codigo de empleado');
                 return;
             }
             $.ajax({
-                url: '/getEmploye/'+code,
+                url: '/getEmploye/'+codigo,
                 method: 'GET',
                 error: function(){
 
                 },
                 success: function(response){
                     //add employe
-                    if(!checkEmployes()){
+                    if(!checkEmployes(response)){
                         addRow(response);
                     }
 
@@ -369,7 +370,7 @@
             $("#tableEmployes tbody").children().remove();
         }
 
-        function checkEmployes(){
+        function checkEmployes(response){
             var check = false;
             var table = $("#tableEmployes tbody tr");
             var count_table_tbody_tr = $("#tableEmployes tbody tr").length;
@@ -390,84 +391,100 @@
             }
             return check;
         }
+        var string = "";
+        $(document).on('keypress',function(e) {
+
+            patron = /^([0-9])*$/;
+
+            if(patron.test(String.fromCharCode(e.which)) ){
+                string += String.fromCharCode(e.which);
+            }
+
+            if(e.which == 13) {
+                console.log(string);
+                addEmploye(string);
+                e.preventDefault();
+                string = "";
+            }
+        });
     </script>
     <script>
         var currentTab = 0; // Current tab is set to be the first tab (0)
         showTab(currentTab); // Display the current tab
 
         function showTab(n) {
-        // This function will display the specified tab of the form ...
-        var x = document.getElementsByClassName("tab");
-        x[n].style.display = "block";
-        // ... and fix the Previous/Next buttons:
-        if (n == 0) {
-            document.getElementById("prevBtn").style.display = "none";
-        } else {
-            document.getElementById("prevBtn").style.display = "inline";
-        }
-        if (n == (x.length - 1)) {
-            document.getElementById("nextBtn").innerHTML = "Completar";
-            document.getElementById("prevBtn").setAttribute('hidden',true);
-        } else {
-            document.getElementById("nextBtn").innerHTML = "Siguiente";
+            // This function will display the specified tab of the form ...
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            // ... and fix the Previous/Next buttons:
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").innerHTML = "Completar";
+                document.getElementById("prevBtn").setAttribute('hidden',true);
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Siguiente";
 
 
-        }
-        // ... and run a function that displays the correct step indicator:
-        fixStepIndicator(n)
+            }
+            // ... and run a function that displays the correct step indicator:
+            fixStepIndicator(n)
         }
 
         function nextPrev(n) {
-        // This function will figure out which tab to display
-        var x = document.getElementsByClassName("tab");
-        // Exit the function if any field in the current tab is invalid:
-        if (n == 1 && !validateForm()) return false;
-        // Hide the current tab:
-        x[currentTab].style.display = "none";
-        // Increase or decrease the current tab by 1:
-        currentTab = currentTab + n;
-        // if you have reached the end of the form... :
-        if (currentTab >= x.length) {
-            //...the form gets submitted:
-            document.getElementById("regForm").submit();
-            return false;
-        }
-        // Otherwise, display the correct tab:
-        showTab(currentTab);
+            // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+            if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            // if you have reached the end of the form... :
+            if (currentTab >= x.length) {
+                //...the form gets submitted:
+                document.getElementById("regForm").submit();
+                return false;
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
         }
 
         function validateForm() {
-        // This function deals with validation of the form fields
-        var x, y, i, valid = true;
-        x = document.getElementsByClassName("tab");
+            // This function deals with validation of the form fields
+            var x, y, i, valid = true;
+            x = document.getElementsByClassName("tab");
 
-        y = x[currentTab].getElementsByTagName("input");
+            y = x[currentTab].getElementsByTagName("input");
 
-        // A loop that checks every input field in the current tab:
-        for (i = 0; i < y.length; i++) {
-            // If a field is empty...
-            if (y[i].value == "") {
-            // add an "invalid" class to the field:
-            y[i].className += " invalid";
-            // and set the current valid status to false:
-            valid = false;
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+                // If a field is empty...
+                if (y[i].value == "" && y[i].id != "code") {
+                    // add an "invalid" class to the field:
+                    y[i].className += " invalid";
+                    // and set the current valid status to false:
+                    valid = false;
+                }
             }
-        }
-        // If the valid status is true, mark the step as finished and valid:
-        if (valid) {
-            document.getElementsByClassName("step")[currentTab].className += " finish";
-        }
-        return valid; // return the valid status
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+            return valid; // return the valid status
         }
 
         function fixStepIndicator(n) {
-        // This function removes the "active" class of all steps...
-        var i, x = document.getElementsByClassName("step");
-        for (i = 0; i < x.length; i++) {
-            x[i].className = x[i].className.replace(" active", "");
-        }
-        //... and adds the "active" class to the current step:
-        x[n].className += " active";
+            // This function removes the "active" class of all steps...
+            var i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class to the current step:
+            x[n].className += " active";
         }
     </script>
     <script>
