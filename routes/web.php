@@ -45,6 +45,8 @@ Route::get('/getEmploye/{code}',function($code){
 
 Route::post('/register-tips',function(Request $req){
     // return $req->all();
+
+    dd($req);
     $group = new Group();
     $group->id_labors = $req->labor;
     $group->video = $req->videoName;
@@ -54,7 +56,7 @@ Route::post('/register-tips',function(Request $req){
     $count = count($req->employe);
 
     $labor = Labors::where('id','=',$req->labor)->first();
-
+    $employes = [];
     for ($i=0; $i < $count; $i++) {
         # code...
         $eg = new Employesgroup();
