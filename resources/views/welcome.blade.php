@@ -10,7 +10,7 @@
     <title>Beta Tips</title>
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="//vjs.zencdn.net/7.6.6/video-js.min.css" />
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
@@ -88,22 +88,6 @@
             min-width: 300px;
         }
 
-        /* Style the input fields */
-        /*
-            input {
-            padding: 10px;
-            width: 100%;
-            font-size: 17px;
-            font-family: Raleway;
-            border: 1px solid #aaaaaa;
-            }
-            */
-        /* Mark input boxes that gets an error on validation: */
-        /*
-            input.invalid {
-            background-color: #ffdddd;
-            }*/
-
         /* Hide all steps by default: */
         .tab {
             display: none;
@@ -170,7 +154,8 @@
                     <div class="card-header">
                         <h2>Beta Tips</h2>
                     </div>
-                    <form id="regForm" action="{{ route('register.betatips') }}" target="_blank" method="post" enctype="multipart/form-data">
+                    <form id="regForm" action="{{ route('register.betatips') }}" target="_blank" method="post"
+                        enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="card-body">
                             <!-- One "tab" for each step in the form: -->
@@ -214,414 +199,419 @@
             </div>
         </div>
     </div>
-</body>
-<script src="{{ asset('js/app.js') }}"></script>
-<script src="//vjs.zencdn.net/7.6.6/video.min.js"></script>
-<script>
-    //script para elegir cultivos , lista de participantes , implemento y video
-    $('#cultivos > div').on('click', function() {
-        // $(this).attr('id');
-        if ($("#cultivos > div").hasClass('card text-white m-1 p-2 bg-success')) {
-            $("#cultivos > div").removeClass();
-            $("#cultivos > div").addClass("card text-white m-1");
-            $(this).addClass("card text-white m-1 p-2 bg-success");
-        } else {
-            $(this).addClass('card text-white m-1 p-2 bg-success');
-        }
-        $('#cultivo').val($(this).attr('id'));
-        loadLabors($(this).attr('id'));
-    });
 
-    function loadLabors(id) {
-        $.ajax({
-            url: '/getLabors/' + id,
-            method: 'GET',
-            error: function() {
-
-            },
-            success: function(response) {
-                // console.log(response);
-                // clearListEmploye();
-                $('#labors').html(response);
-                $('#labors > div > div').on('click', function() {
-                    // $(this).attr('id');
-                    if ($("#labors > div > div").hasClass('card text-white m-1 p-2 bg-success')) {
-                        $("#labors > div > div").removeClass();
-                        $("#labors > div > div").addClass("card text-white m-1");
-                        $(this).addClass("card text-white m-1 p-2 bg-success");
-                    } else {
-                        $(this).addClass('card text-white m-1 p-2 bg-success');
-                    }
-                    $('#labor').val($(this).attr('id'));
-                });
-            },
-            complete: function() {
-
+    <script src="{{ asset('js/app.js') }}"></script>
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+    <script>
+        //script para elegir cultivos , lista de participantes , implemento y video
+        $('#cultivos > div').on('click', function() {
+            // $(this).attr('id');
+            if ($("#cultivos > div").hasClass('card text-white m-1 p-2 bg-success')) {
+                $("#cultivos > div").removeClass();
+                $("#cultivos > div").addClass("card text-white m-1");
+                $(this).addClass("card text-white m-1 p-2 bg-success");
+            } else {
+                $(this).addClass('card text-white m-1 p-2 bg-success');
             }
+            $('#cultivo').val($(this).attr('id'));
+            loadLabors($(this).attr('id'));
         });
-    }
 
-    function addEmploye(codigo) {
+        function loadLabors(id) {
+            $.ajax({
+                url: '/getLabors/' + id,
+                method: 'GET',
+                error: function() {
 
-        console.log(codigo.length);
-        if (codigo.length > 8 && codigo.length < 0) {
-            alert('Necesitas un codigo de empleado');
-            return;
+                },
+                success: function(response) {
+                    // console.log(response);
+                    // clearListEmploye();
+                    $('#labors').html(response);
+                    $('#labors > div > div').on('click', function() {
+                        // $(this).attr('id');
+                        if ($("#labors > div > div").hasClass('card text-white m-1 p-2 bg-success')) {
+                            $("#labors > div > div").removeClass();
+                            $("#labors > div > div").addClass("card text-white m-1");
+                            $(this).addClass("card text-white m-1 p-2 bg-success");
+                        } else {
+                            $(this).addClass('card text-white m-1 p-2 bg-success');
+                        }
+                        $('#labor').val($(this).attr('id'));
+                    });
+                },
+                complete: function() {
+
+                }
+            });
         }
-        $.ajax({
-            url: '/getEmploye/' + codigo,
-            method: 'GET',
-            error: function() {
 
-            },
-            success: function(response) {
-                //add employe
-                if (!checkEmployes(response)) {
-                    addRow(response);
+        function addEmploye(codigo) {
+
+            console.log(codigo.length);
+            if (codigo.length > 8 && codigo.length < 0) {
+                alert('Necesitas un codigo de empleado');
+                return;
+            }
+            $.ajax({
+                url: '/getEmploye/' + codigo,
+                method: 'GET',
+                error: function() {
+
+                },
+                success: function(response) {
+                    //add employe
+                    if (!checkEmployes(response)) {
+                        addRow(response);
+                    }
+
+                },
+                complete: function() {
+
+                }
+            })
+        }
+
+        function addRow(response) {
+            var table = $("#tableEmployes");
+            var count_table_tbody_tr = $("#tableEmployes tbody tr").length;
+            var row_id = count_table_tbody_tr + 1;
+
+            if (response.success) {
+                var html = '<tr id="row_' + response.data.id + '" class="text-center">' +
+                    '<td>' + row_id + '</td>' +
+                    '<td>' +
+                    '<input id="employe_' + response.data.id + '" class="form-control" value="' + response.data.id +
+                    '" name="employe[]" type="hidden" />' +
+                    response.data.code +
+                    '</td>' +
+                    '<td>' +
+                    response.data.fullname +
+                    '</td>' +
+                    '<td><button type="button" class="btn btn-danger" onclick="removeRow(\'' + response.data.id +
+                    '\')">Eliminar</button></td>' +
+                    '</tr>';
+
+                if (count_table_tbody_tr >= 1) {
+                    $("#tableEmployes tbody tr:last").after(html);
+                } else {
+                    $("#tableEmployes tbody").html(html);
                 }
 
-            },
-            complete: function() {
-
-            }
-        })
-    }
-
-    function addRow(response) {
-        var table = $("#tableEmployes");
-        var count_table_tbody_tr = $("#tableEmployes tbody tr").length;
-        var row_id = count_table_tbody_tr + 1;
-
-        if (response.success) {
-            var html = '<tr id="row_' + response.data.id + '" class="text-center">' +
-                '<td>' + row_id + '</td>' +
-                '<td>' +
-                '<input id="employe_' + response.data.id + '" class="form-control" value="' + response.data.id +
-                '" name="employe[]" type="hidden" />' +
-                response.data.code +
-                '</td>' +
-                '<td>' +
-                response.data.fullname +
-                '</td>' +
-                '<td><button type="button" class="btn btn-danger" onclick="removeRow(\'' + response.data.id +
-                '\')">Eliminar</button></td>' +
-                '</tr>';
-
-            if (count_table_tbody_tr >= 1) {
-                $("#tableEmployes tbody tr:last").after(html);
             } else {
-                $("#tableEmployes tbody").html(html);
+                alert('Codigo de empleado Invalido');
             }
-
-        } else {
-            alert('Codigo de empleado Invalido');
         }
-    }
 
-    function removeRow(tr_id) {
-        $("#tableEmployes tbody tr#row_" + tr_id).remove();
-        // subAmount();
-    }
+        function removeRow(tr_id) {
+            $("#tableEmployes tbody tr#row_" + tr_id).remove();
+            // subAmount();
+        }
 
-    function clearListEmploye() {
-        $("#tableEmployes tbody").children().remove();
-    }
+        function clearListEmploye() {
+            $("#tableEmployes tbody").children().remove();
+        }
 
-    function checkEmployes(response) {
-        var check = false;
-        var table = $("#tableEmployes tbody tr");
-        var count_table_tbody_tr = $("#tableEmployes tbody tr").length;
+        function checkEmployes(response) {
+            var check = false;
+            var table = $("#tableEmployes tbody tr");
+            var count_table_tbody_tr = $("#tableEmployes tbody tr").length;
 
-        if (count_table_tbody_tr > 0) {
-            //console.log('there is a element')
-            if (response.success == true) {
+            if (count_table_tbody_tr > 0) {
+                //console.log('there is a element')
+                if (response.success == true) {
 
-                $('#tableEmployes tbody tr').each(function(i, e) {
-                    console.log($(e).attr('id'));
-                    // console.log("Cantidad: all "+Number($(e).children().text()));
-                    if ("row_" + response.data.id == $(e).attr('id')) {
+                    $('#tableEmployes tbody tr').each(function(i, e) {
+                        console.log($(e).attr('id'));
                         // console.log("Cantidad: all "+Number($(e).children().text()));
-                        check = true;
-                    }
-                });
-            } //end if bool
-        }
-        return check;
-    }
-    var string = "";
-    $(document).on('keypress', function(e) {
-
-        patron = /^([0-9])*$/;
-
-        if (patron.test(String.fromCharCode(e.which))) {
-            string += String.fromCharCode(e.which);
-        }
-
-        if (e.which == 13) {
-            console.log(string);
-            addEmploye(string);
-            e.preventDefault();
-            string = "";
-        }
-    });
-</script>
-<script>
-    var currentTab = 0; // Current tab is set to be the first tab (0)
-    showTab(currentTab); // Display the current tab
-
-    function showTab(n) {
-        // This function will display the specified tab of the form ...
-        var x = document.getElementsByClassName("tab");
-        x[n].style.display = "block";
-        // ... and fix the Previous/Next buttons:
-        if (n == 0) {
-            document.getElementById("prevBtn").style.display = "none";
-        } else {
-            document.getElementById("prevBtn").style.display = "inline";
-        }
-        if (n == (x.length - 1)) {
-            document.getElementById("nextBtn").innerHTML = "Completar";
-            document.getElementById("prevBtn").setAttribute('hidden', true);
-        } else {
-            document.getElementById("nextBtn").innerHTML = "Siguiente";
-        }
-        // ... and run a function that displays the correct step indicator:
-        fixStepIndicator(n)
-    }
-
-    function nextPrev(n) {
-        // This function will figure out which tab to display
-        var x = document.getElementsByClassName("tab");
-        // Exit the function if any field in the current tab is invalid:
-        if (n == 1 && !validateForm()) return false;
-        // Hide the current tab:
-        x[currentTab].style.display = "none";
-        // Increase or decrease the current tab by 1:
-        currentTab = currentTab + n;
-        // if you have reached the end of the form... :
-        if (currentTab >= x.length) {
-            //...the form gets submitted:
-            document.getElementById("regForm").submit();
-            return false;
-        }
-        // Otherwise, display the correct tab:
-        showTab(currentTab);
-    }
-
-    function validateForm() {
-        // This function deals with validation of the form fields
-        var x, y, i, valid = true;
-        x = document.getElementsByClassName("tab");
-
-        y = x[currentTab].getElementsByTagName("input");
-
-        // A loop that checks every input field in the current tab:
-        for (i = 0; i < y.length; i++) {
-            // If a field is empty...
-            if (y[i].value == "" && y[i].id != "code") {
-                // add an "invalid" class to the field:
-                y[i].className += " invalid";
-                // and set the current valid status to false:
-                valid = false;
+                        if ("row_" + response.data.id == $(e).attr('id')) {
+                            // console.log("Cantidad: all "+Number($(e).children().text()));
+                            check = true;
+                        }
+                    });
+                } //end if bool
             }
+            return check;
         }
-        // If the valid status is true, mark the step as finished and valid:
-        if (valid) {
-            document.getElementsByClassName("step")[currentTab].className += " finish";
-        }
-        return valid; // return the valid status
-    }
+        var string = "";
+        $(document).on('keypress', function(e) {
 
-    function fixStepIndicator(n) {
-        // This function removes the "active" class of all steps...
-        var i, x = document.getElementsByClassName("step");
-        for (i = 0; i < x.length; i++) {
-            x[i].className = x[i].className.replace(" active", "");
-        }
-        //... and adds the "active" class to the current step:
-        x[n].className += " active";
-    }
-</script>
-<script>
-    /**
-     * Grabar vídeo y audio obtenido del micrófono y cámara web
-     * con JavaScript, seleccionando el dispositivo de grabación de audio
-     * y el dispositivo de vídeo (cámara web) de una lista;
-     * usando MediaRecorder y getUserMedia
-     *
-     * @author parzibyte
-     * @see https://parzibyte.me/blog
-     */
-    const init = () => {
-        const tieneSoporteUserMedia = () =>
-            !!(navigator.mediaDevices.getUserMedia)
+            patron = /^([0-9])*$/;
 
-        // Si no soporta...
-        // Amable aviso para que el mundo comience a usar navegadores decentes ;)
-        if (typeof MediaRecorder === "undefined" || !tieneSoporteUserMedia())
-            return alert(
-                "Tu navegador web no cumple los requisitos; por favor, actualiza a un navegador decente como Firefox o Google Chrome"
+            if (patron.test(String.fromCharCode(e.which))) {
+                string += String.fromCharCode(e.which);
+            }
+
+            if (e.which == 13) {
+                console.log(string);
+                addEmploye(string);
+                e.preventDefault();
+                string = "";
+            }
+        });
+    </script>
+    <script>
+        var currentTab = 0; // Current tab is set to be the first tab (0)
+        showTab(currentTab); // Display the current tab
+
+        function showTab(n) {
+            // This function will display the specified tab of the form ...
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            // ... and fix the Previous/Next buttons:
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").innerHTML = "Completar";
+                document.getElementById("prevBtn").setAttribute('hidden', true);
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Siguiente";
+            }
+            // ... and run a function that displays the correct step indicator:
+            fixStepIndicator(n)
+        }
+
+        function nextPrev(n) {
+            // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+            if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            // if you have reached the end of the form... :
+            if (currentTab >= x.length) {
+                //...the form gets submitted:
+                document.getElementById("regForm").submit();
+                return false;
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+        }
+
+        function validateForm() {
+            // This function deals with validation of the form fields
+            var x, y, i, valid = true;
+            x = document.getElementsByClassName("tab");
+
+            y = x[currentTab].getElementsByTagName("input");
+
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+                // If a field is empty...
+                if (y[i].value == "" && y[i].id != "code") {
+                    // add an "invalid" class to the field:
+                    y[i].className += " invalid";
+                    // and set the current valid status to false:
+                    valid = false;
+                }
+            }
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+            return valid; // return the valid status
+        }
+
+        function fixStepIndicator(n) {
+            // This function removes the "active" class of all steps...
+            var i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class to the current step:
+            x[n].className += " active";
+        }
+    </script>
+    <script>
+        /**
+         * Grabar vídeo y audio obtenido del micrófono y cámara web
+         * con JavaScript, seleccionando el dispositivo de grabación de audio
+         * y el dispositivo de vídeo (cámara web) de una lista;
+         * usando MediaRecorder y getUserMedia
+         *
+         * @author parzibyte
+         * @see https://parzibyte.me/blog
+         */
+        const init = () => {
+            const tieneSoporteUserMedia = () =>
+                !!(navigator.mediaDevices.getUserMedia)
+
+            // Si no soporta...
+            // Amable aviso para que el mundo comience a usar navegadores decentes ;)
+            if (typeof MediaRecorder === "undefined" || !tieneSoporteUserMedia())
+                return alert(
+                    "Tu navegador web no cumple los requisitos; por favor, actualiza a un navegador decente como Firefox o Google Chrome"
                 );
 
 
-        // Declaración de elementos del DOM
-        const $dispositivosDeAudio = document.querySelector("#dispositivosDeAudio"),
-            $dispositivosDeVideo = document.querySelector("#dispositivosDeVideo"),
-            $duracion = document.querySelector("#duracion"),
-            $video = document.querySelector("#video"),
-            $btnComenzarGrabacion = document.querySelector("#btnComenzarGrabacion"),
-            $btnDetenerGrabacion = document.querySelector("#btnDetenerGrabacion"),
-            $videoBetaTips = document.querySelector('#video-betatips'); // Algunas funciones útiles
+            // Declaración de elementos del DOM
+            const $dispositivosDeAudio = document.querySelector("#dispositivosDeAudio"),
+                $dispositivosDeVideo = document.querySelector("#dispositivosDeVideo"),
+                $duracion = document.querySelector("#duracion"),
+                $video = document.querySelector("#video"),
+                $btnComenzarGrabacion = document.querySelector("#btnComenzarGrabacion"),
+                $btnDetenerGrabacion = document.querySelector("#btnDetenerGrabacion"),
+                $videoBetaTips = document.querySelector('#vbeta'); //dD Algunas funciones útiles
 
-        const limpiarSelect = elemento => {
-            for (let x = elemento.options.length - 1; x >= 0; x--) {
-                elemento.options.remove(x);
+            const limpiarSelect = elemento => {
+                for (let x = elemento.options.length - 1; x >= 0; x--) {
+                    elemento.options.remove(x);
+                }
             }
-        }
 
-        const segundosATiempo = numeroDeSegundos => {
-            let horas = Math.floor(numeroDeSegundos / 60 / 60);
-            numeroDeSegundos -= horas * 60 * 60;
-            let minutos = Math.floor(numeroDeSegundos / 60);
-            numeroDeSegundos -= minutos * 60;
-            numeroDeSegundos = parseInt(numeroDeSegundos);
-            if (horas < 10) horas = "0" + horas;
-            if (minutos < 10) minutos = "0" + minutos;
-            if (numeroDeSegundos < 10) numeroDeSegundos = "0" + numeroDeSegundos;
+            const segundosATiempo = numeroDeSegundos => {
+                let horas = Math.floor(numeroDeSegundos / 60 / 60);
+                numeroDeSegundos -= horas * 60 * 60;
+                let minutos = Math.floor(numeroDeSegundos / 60);
+                numeroDeSegundos -= minutos * 60;
+                numeroDeSegundos = parseInt(numeroDeSegundos);
+                if (horas < 10) horas = "0" + horas;
+                if (minutos < 10) minutos = "0" + minutos;
+                if (numeroDeSegundos < 10) numeroDeSegundos = "0" + numeroDeSegundos;
 
-            return `${horas}:${minutos}:${numeroDeSegundos}`;
-        };
-        // Variables "globales"
-        let tiempoInicio, mediaRecorder, idIntervalo;
-        const refrescar = () => {
-            $duracion.textContent = segundosATiempo((Date.now() - tiempoInicio) / 1000);
-        }
+                return `${horas}:${minutos}:${numeroDeSegundos}`;
+            };
+            // Variables "globales"
+            let tiempoInicio, mediaRecorder, idIntervalo;
+            const refrescar = () => {
+                $duracion.textContent = segundosATiempo((Date.now() - tiempoInicio) / 1000);
+            }
 
-        // Consulta la lista de dispositivos de entrada de audio y llena el select
-        const llenarLista = () => {
-            navigator
-                .mediaDevices
-                .enumerateDevices()
-                .then(dispositivos => {
-                    limpiarSelect($dispositivosDeAudio);
-                    limpiarSelect($dispositivosDeVideo);
-                    dispositivos.forEach((dispositivo, indice) => {
-                        if (dispositivo.kind === "audioinput") {
-                            const $opcion = document.createElement("option");
-                            // Firefox no trae nada con label, que viva la privacidad
-                            // y que muera la compatibilidad
-                            $opcion.text = dispositivo.label || `Micrófono ${indice + 1}`;
-                            $opcion.value = dispositivo.deviceId;
-                            $dispositivosDeAudio.appendChild($opcion);
-                        } else if (dispositivo.kind === "videoinput") {
-                            const $opcion = document.createElement("option");
-                            // Firefox no trae nada con label, que viva la privacidad
-                            // y que muera la compatibilidad
-                            $opcion.text = dispositivo.label || `Cámara ${indice + 1}`;
-                            $opcion.value = dispositivo.deviceId;
-                            $dispositivosDeVideo.appendChild($opcion);
+            // Consulta la lista de dispositivos de entrada de audio y llena el select
+            const llenarLista = () => {
+                navigator
+                    .mediaDevices
+                    .enumerateDevices()
+                    .then(dispositivos => {
+                        limpiarSelect($dispositivosDeAudio);
+                        limpiarSelect($dispositivosDeVideo);
+                        dispositivos.forEach((dispositivo, indice) => {
+                            if (dispositivo.kind === "audioinput") {
+                                const $opcion = document.createElement("option");
+                                // Firefox no trae nada con label, que viva la privacidad
+                                // y que muera la compatibilidad
+                                $opcion.text = dispositivo.label || `Micrófono ${indice + 1}`;
+                                $opcion.value = dispositivo.deviceId;
+                                $dispositivosDeAudio.appendChild($opcion);
+                            } else if (dispositivo.kind === "videoinput") {
+                                const $opcion = document.createElement("option");
+                                // Firefox no trae nada con label, que viva la privacidad
+                                // y que muera la compatibilidad
+                                $opcion.text = dispositivo.label || `Cámara ${indice + 1}`;
+                                $opcion.value = dispositivo.deviceId;
+                                $dispositivosDeVideo.appendChild($opcion);
+                            }
+                        })
+                    })
+            };
+            // Ayudante para la duración; no ayuda en nada pero muestra algo informativo
+            const comenzarAContar = () => {
+                tiempoInicio = Date.now();
+                idIntervalo = setInterval(refrescar, 500);
+            };
+
+            // Comienza a grabar el audio con el dispositivo seleccionado
+            const comenzarAGrabar = () => {
+                if (!$dispositivosDeAudio.options.length) return alert("No hay micrófono");
+                if (!$dispositivosDeVideo.options.length) return alert("No hay cámara");
+                // No permitir que se grabe doblemente
+                if (mediaRecorder) return alert("Ya se está grabando");
+
+                navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            deviceId: $dispositivosDeAudio.value, // Indicar dispositivo de audio
+                        },
+                        video: {
+                            deviceId: $dispositivosDeAudio.value, // Indicar dispositivo de vídeo
                         }
                     })
-                })
-        };
-        // Ayudante para la duración; no ayuda en nada pero muestra algo informativo
-        const comenzarAContar = () => {
-            tiempoInicio = Date.now();
-            idIntervalo = setInterval(refrescar, 500);
-        };
+                    .then(stream => {
+                        // Poner stream en vídeo
+                        $video.srcObject = stream;
+                        $video.play();
+                        // Comenzar a grabar con el stream
+                        mediaRecorder = new MediaRecorder(stream);
+                        mediaRecorder.start();
+                        comenzarAContar();
+                        // En el arreglo pondremos los datos que traiga el evento dataavailable
+                        const fragmentosDeAudio = [];
+                        // Escuchar cuando haya datos disponibles
+                        mediaRecorder.addEventListener("dataavailable", evento => {
+                            // Y agregarlos a los fragmentos
+                            fragmentosDeAudio.push(evento.data);
+                        });
+                        // Cuando se detenga (haciendo click en el botón) se ejecuta esto
+                        mediaRecorder.addEventListener("stop", () => {
+                            // Pausar vídeo
+                            $video.pause();
+                            // Detener el stream
+                            stream.getTracks().forEach(track => track.stop());
+                            // Detener la cuenta regresiva
+                            detenerConteo();
+                            // Convertir los fragmentos a un objeto binario
+                            const blobVideo = new Blob(fragmentosDeAudio);
 
-        // Comienza a grabar el audio con el dispositivo seleccionado
-        const comenzarAGrabar = () => {
-            if (!$dispositivosDeAudio.options.length) return alert("No hay micrófono");
-            if (!$dispositivosDeVideo.options.length) return alert("No hay cámara");
-            // No permitir que se grabe doblemente
-            if (mediaRecorder) return alert("Ya se está grabando");
-
-            navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        deviceId: $dispositivosDeAudio.value, // Indicar dispositivo de audio
-                    },
-                    video: {
-                        deviceId: $dispositivosDeAudio.value, // Indicar dispositivo de vídeo
-                    }
-                })
-                .then(stream => {
-                    // Poner stream en vídeo
-                    $video.srcObject = stream;
-                    $video.play();
-                    // Comenzar a grabar con el stream
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.start();
-                    comenzarAContar();
-                    // En el arreglo pondremos los datos que traiga el evento dataavailable
-                    const fragmentosDeAudio = [];
-                    // Escuchar cuando haya datos disponibles
-                    mediaRecorder.addEventListener("dataavailable", evento => {
-                        // Y agregarlos a los fragmentos
-                        fragmentosDeAudio.push(evento.data);
+                            // Crear una URL o enlace para descargar
+                            const urlParaDescargar = URL.createObjectURL(blobVideo);
+                            // Crear un elemento <a> invisible para descargar el audio
+                            let a = document.createElement("a");
+                            document.body.appendChild(a);
+                            a.style = "display: none";
+                            a.href = urlParaDescargar;
+                            var date_time = "{{ strtotime(date('Y-m-d')) }}";
+                            $('#videoName').val(date_time + ".mp4");
+                            $('#blobVideo').val(blobVideo);
+                            a.download = date_time + ".mp4";
+                            // Hacer click en el enlace
+                            a.click();
+                            // Y remover el objeto
+                            window.URL.revokeObjectURL(urlParaDescargar);
+                        });
+                    })
+                    .catch(error => {
+                        // Aquí maneja el error, tal vez no dieron permiso
+                        console.log(error)
                     });
-                    // Cuando se detenga (haciendo click en el botón) se ejecuta esto
-                    mediaRecorder.addEventListener("stop", () => {
-                        // Pausar vídeo
-                        $video.pause();
-                        // Detener el stream
-                        stream.getTracks().forEach(track => track.stop());
-                        // Detener la cuenta regresiva
-                        detenerConteo();
-                        // Convertir los fragmentos a un objeto binario
-                        const blobVideo = new Blob(fragmentosDeAudio);
-
-                        // Crear una URL o enlace para descargar
-                        const urlParaDescargar = URL.createObjectURL(blobVideo);
-                        // Crear un elemento <a> invisible para descargar el audio
-                        let a = document.createElement("a");
-                        document.body.appendChild(a);
-                        a.style = "display: none";
-                        a.href = urlParaDescargar;
-                        var date_time = "{{ strtotime(date('Y-m-d')) }}";
-                        $('#videoName').val(date_time + ".mp4");
-                        $('#blobVideo').val(blobVideo);
-                        a.download = date_time + ".mp4";
-                        // Hacer click en el enlace
-                        a.click();
-                        // Y remover el objeto
-                        window.URL.revokeObjectURL(urlParaDescargar);
-                    });
-                })
-                .catch(error => {
-                    // Aquí maneja el error, tal vez no dieron permiso
-                    console.log(error)
-                });
-        };
+            };
 
 
-        const detenerConteo = () => {
-            clearInterval(idIntervalo);
-            tiempoInicio = null;
-            $duracion.textContent = "";
+            const detenerConteo = () => {
+                clearInterval(idIntervalo);
+                tiempoInicio = null;
+                $duracion.textContent = "";
+            }
+
+            const detenerGrabacion = () => {
+                if (!mediaRecorder) return alert("No se está grabando");
+                mediaRecorder.stop();
+                mediaRecorder = null;
+            };
+
+
+            $btnComenzarGrabacion.addEventListener("click", comenzarAGrabar);
+            $btnDetenerGrabacion.addEventListener("click", detenerGrabacion);
+            console.log($videoBetaTips);
+            $videoBetaTips.addEventListener('play', comenzarAGrabar);
+            $videoBetaTips.addEventListener('ended', detenerGrabacion);
+            // $videoBetaTips.onended = (event) => detenerGrabacion;
+            // $videoBetaTips.onplay = (event) => {
+            //     console.log("on play");
+            // };
+
+            // Cuando ya hemos configurado lo necesario allá arriba llenamos la lista
+
+            llenarLista();
+            // comenzarAGrabar();
         }
 
-        const detenerGrabacion = () => {
-            if (!mediaRecorder) return alert("No se está grabando");
-            mediaRecorder.stop();
-            mediaRecorder = null;
-        };
-
-
-        $btnComenzarGrabacion.addEventListener("click", comenzarAGrabar);
-        $btnDetenerGrabacion.addEventListener("click", detenerGrabacion);
-        $videoBetaTips.addEventListener('play', comenzarAGrabar);
-        $videoBetaTips.addEventListener('ended', detenerGrabacion);
-
-
-        // Cuando ya hemos configurado lo necesario allá arriba llenamos la lista
-
-        llenarLista();
-        // comenzarAGrabar();
-    }
-
-    // Esperar a que el documento esté listo...
-    document.addEventListener("DOMContentLoaded", init);
-</script>
+        // Esperar a que el documento esté listo...
+        $(document).ready(init);
+    </script>
+</body>
 
 </html>

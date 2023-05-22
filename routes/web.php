@@ -15,6 +15,7 @@ use App\Employes;
 use App\Employesgroup;
 use App\Group;
 use App\Http\Controllers\ReportesController;
+use App\Implement;
 use App\Labors;
 use Illuminate\Http\Request;
 
@@ -26,27 +27,27 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/getLabors/{id}',function($id){
-    $data = Labors::where('id_crops','=',$id)->get();
-    return view('response.labors',compact('data'));
+Route::get('/getLabors/{id}', function ($id) {
+    $data = Labors::where('id_crops', '=', $id)->get();
+    return view('response.labors', compact('data'));
 });
 
-Route::get('/getEmploye/{code}',function($code){
+Route::get('/getEmploye/{code}', function ($code) {
     $datos = array();
-    $data = Employes::where('code','=',$code)->first();
-    if($data){
+    $data = Employes::where('code', '=', $code)->first();
+    if ($data) {
         $datos['success'] = true;
         $datos['data'] = $data;
-    }else{
+    } else {
         $datos['success'] = false;
     }
     return response()->json($datos, 200, []);
 });
 
-Route::post('/register-tips',function(Request $req){
+Route::post('/register-tips', function (Request $req) {
     // return $req->all();
 
-    dd($req);
+    // dd($req);
     $group = new Group();
     $group->id_labors = $req->labor;
     $group->video = $req->videoName;
@@ -55,9 +56,15 @@ Route::post('/register-tips',function(Request $req){
 
     $count = count($req->employe);
 
-    $labor = Labors::where('id','=',$req->labor)->first();
-    $employes = [];
-    for ($i=0; $i < $count; $i++) {
+    $labor = Labors::where('id', '=', $req->labor)->first();
+    $implementos = Implement::where('labor_id', '=', $req->labor)->get();
+
+    $datos = [
+        "implementos" => $implementos,
+        "labor" => $labor,
+    ];
+
+    for ($i = 0; $i < $count; $i++) {
         # code...
         $eg = new Employesgroup();
         $eg->id_employe = $req->employe[$i];
@@ -65,23 +72,18 @@ Route::post('/register-tips',function(Request $req){
         $eg->is_checked = 1;
         $eg->save();
 
-        $employe = Employes::where('id','=',$req->employe[$i])->first();
+        $employe = Employes::where('id', '=', $req->employe[$i])->first();
 
-        $employes[$i] = array(
+        $datos["employes"][$i] = array(
             'employe_name' => $employe->fullname,
             'employe_code' => $employe->code,
             'employe_doc' => $employe->doc_num,
             'employe_labor' => $labor->name,
         );
-
     }
-
+    // dd($employes);
     $print = ReportesController::getInstance();
-    return $print->crearPDF($employes,'ATS','pdf.ats',1,'portrait');
-
-    //generate report by employe
-
-    // return redirect('/');
+    return $print->crearPDF($datos, 'ATS', 'pdf.ats', 1, 'portrait');
 })->name('register.betatips');
 
 

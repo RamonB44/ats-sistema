@@ -18,13 +18,6 @@ class ReportesController extends Controller
         return self::$current;
     }
 
-    // public function crearPDF($vista,$data){
-    //     $data = $data;
-    //     $date = date('Y-m-d');
-    //     $pdf = PDF::loadView($vista, compact('data','date'));
-    //     return $pdf->stream();
-    // }
-
     public function crearPDF($datos, $title, $vistaurl, $tipo, $type)
     {
         $pdf = new Dompdf();

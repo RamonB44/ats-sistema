@@ -1,8 +1,8 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-center">
-        <video id="video-betatips" class="video-js" style="height: 70vh;width: 150vh" controls data-setup="{}" preload="autop"
-            poster="thumbnail.jpg">
-            <source src="{{ asset('storage\4min.mp4') }}" type="video/mp4">
+        <video id="vbeta" class="video-js" style="height: 70vh;width: 150vh" controls data-setup="{}" preload="auto"
+            >
+            <source src="{{ asset('storage\1s.mp4') }}" type="video/mp4">
         </video>
         <div hidden>
             <label for="dispositivosDeAudio">Micrófono:</label><br>
