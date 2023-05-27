@@ -14,8 +14,8 @@ class Job extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function m_implemento(): BelongsTo
     {
-        return $this->belongsTo(Implement::class, 'implement_id');
+        return $this->belongsTo(MImplement::class, 'implement_id');
     }
 }

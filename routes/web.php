@@ -16,7 +16,9 @@ use App\Employesgroup;
 use App\Group;
 use App\Http\Controllers\ReportesController;
 use App\Implement;
+use App\Job;
 use App\Labors;
+use App\MImplement;
 use Illuminate\Http\Request;
 
 Auth::routes();
@@ -57,10 +59,16 @@ Route::post('/register-tips', function (Request $req) {
     $count = count($req->employe);
 
     $labor = Labors::where('id', '=', $req->labor)->first();
-    $implementos = Implement::where('labor_id', '=', $req->labor)->get();
-
+    $lista = Implement::where('labor_id', '=', $req->labor)
+        ->whereNotNull('m_implement_id')
+        ->get()
+        ->pluck("m_implement_id")
+        ->toArray();
+    // dd($lista);
+    $modelos = MImplement::whereIn('id',$lista)->get();
+    // dd($modelos);
     $datos = [
-        "implementos" => $implementos,
+        "implementos" => $modelos,
         "labor" => $labor,
     ];
 

@@ -3,17 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Implement extends Model
 {
     /**
-     * Get all of the comments for the Implement
+     * Get the user that owns the Implement
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function job(): HasMany
+    public function mimplemento(): BelongsTo
     {
-        return $this->hasMany(Job::class);
+        return $this->belongsTo(MImplement::class, 'm_implement_id');
     }
 }
